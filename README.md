@@ -160,7 +160,7 @@ jupyter notebook
 
 ---
 
-## 🔮 Future Work: Scaling the Platform
+##  Future Work: Scaling the Platform
 
 As a Data Analyst, the next logical steps are to transition this from a local pipeline into an automated Business Intelligence (BI) product:
 
