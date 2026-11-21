@@ -1,76 +1,117 @@
-# 🇮🇳 India AQI ML Platform: The Physics & Forecasting of Delhi's Air
+<div align="center">
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=flat&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# 🇮🇳 Vayu AQI Intelligence
+### A Production-Grade Dual-Pipeline Platform for Air Quality Monitoring & ML Forecasting
 
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-A production-grade, dual-pipeline platform that monitors real-time air quality and forecasts dangerous pollution events using 17 years of CPCB historical data.
+</div>
 
-##  Executive Summary: The "99% Accuracy" Trap
-Most AQI models train a Random Forest on today's pollutants and achieve an R² > 0.99. They don't realize they are just reverse-engineering the CPCB mathematical formula (a `max()` of sub-indices). 
-
-**This project proves and quantifies that leakage**, establishes a robust **Persistence Baseline** ("tomorrow = today"), and discovers that while simple models win on average, **Per-Cluster Specialist Models** are the only way to accurately warn the public about toxic, "Severe" air quality days.
+> ###  **[START HERE: View the 16-Chapter Portfolio Presentation Notebook](./notebooks/05_portfolio_presentation.ipynb)**
+> *A comprehensive, visual walkthrough of the entire project—from data ingestion and physics-based EDA to diagnosing machine learning data leakage and validating forecasting baselines.*
 
 ---
 
-##  Deep Dive: The 8 EDA Discoveries
+##  Executive Summary: The "99% Accuracy" Trap & Data Drift
+
+Most AQI forecasting models train a Random Forest on today's pollutants and proudly report an **R² > 0.99**. 
+
+**They are failing without realizing it.** The official Indian AQI is a deterministic mathematical formula calculated from those exact 7 pollutants. If you use today's pollutants to predict today's AQI, the model is not forecasting the future—it is simply reverse-engineering the government's math equation. 
+
+**This project diagnoses that target leakage**, establishes a rigorous **Persistence Baseline** ("tomorrow = today"), and confronts the reality of **Data Drift**—proving that as Delhi's air gets cleaner, ML models must adapt or fail.
+
+---
+
+##  Visual Proof: The Analytical Journey
+
+### 1. Environmental Physics (EDA)
+*Cold air traps pollution, rain cleans it, and Diwali coincides with the winter inversion, keeping AQI elevated for weeks. We explored these phenomena using 17 years of hourly data.*
+![Environmental Physics](./assets/env_physics.png)
+
+### 2. The ML Trap (Regression)
+*When we removed the 7 primary pollutants, the model's R² collapsed from 0.9985 to -0.09, proving it was just reconstructing the CPCB formula rather than forecasting.*
+![Leakage Proof](./assets/ml_leakage_proof.png)
+
+### 3. The Persistence Paradox (Classification)
+*A "dumb" baseline (predicting "tomorrow = today") beat our global ML models on overall accuracy (58.5% vs 57.7%) because AQI categories have massive inertia.*
+![Persistence Paradox](./assets/persistence_paradox.png)
+
+### 4. The Final Verdict (Clustering)
+*By clustering stations into High-Pollution and Low-Pollution regimes, our Specialist model matched the baseline on the critical metric: predicting dangerous "Severe" days (F1: 0.429 vs 0.407). Note: The test set contained very few Severe days, highlighting the challenge of rare-event forecasting.*
+![Specialist Verdict](./assets/specialist_verdict.png)
+
+---
+
+##  The 8 EDA Discoveries
 *(Analysis of 17 years of hourly data across 95 Delhi monitoring stations)*
 
-1. **The Winter Inversion:** Temperature drops cause the boundary layer to compress from 1,500m to 400m, trapping emissions. (Pearson *r* = -0.58).
-2. **The Ozone Paradox:** PM2.5 peaks in Nov, while Ozone peaks in May. They are physically anti-phase and require different policies.
-3. **The Washout Effect:** Rain scrubs PM10 by **66%** (from 227 µg/m³ to 76 µg/m³), proving pollution is a physical accumulation problem.
-4. **Co-Emission Ratio:** Winter is fine-particle (combustion) heavy; Summer is coarse-dust heavy. (PM2.5/PM10 ratio shifts by 1.35×).
-5. **The Weekend Effect:** NO2 drops **5.3%** on weekends, proving commuter traffic is a major toxic gas driver.
-6. **The Diwali Trap:** Because Diwali hits during the winter inversion, it takes **13 days** for the air to recover to baseline.
-7. **The Lockdown Effect:** April 2020 NO2 plummeted **55.7%**—the largest natural experiment in modern pollution history.
-8. **Station "Achilles Heel":** A single Delhi-wide policy will fail. Alipur is PM2.5-dominant (needs combustion controls), while Wazirpur is PM10-dominant (needs dust suppression).
+*   🌡️ **The Winter Inversion:** Temperature drops compress the boundary layer, trapping emissions (Pearson *r* = -0.58).
+*   🌧️ **The Washout Effect:** Rain physically scrubs PM10 out of the air, though this effect is heavily confounded by the monsoon season.
+*   🎆 **The Diwali Trap:** Because Diwali hits during the winter inversion, emissions are trapped, keeping AQI dangerously high for weeks.
+*   🚗 **The Lockdown Effect:** April 2020 NO2 plummeted **55.7%**, proving how much traffic pollutes the air.
+*   📅 **The Weekend Effect:** NO2 drops **5.3%** on weekends, confirming commuter traffic impact.
+*   ☀️ **The Ozone Paradox:** PM2.5 peaks in Nov, while Ozone peaks in May. They are physically anti-phase.
+*   ⚖️ **Co-Emission Ratio:** Winter is fine-particle (combustion) heavy; Summer is coarse-dust heavy.
+*   🎯 **Station "Achilles Heel":** Generic city policies fail. Interventions must be hyper-localized based on a station's historical pollution profile.
 
 ---
 
-##  The ML Arena: From Leakage to Forecasting
+##  The ML Arena (3 Acts)
 
-| Notebook | Focus | Key Finding |
-| :--- | :--- | :--- |
-| **02. Regression** | Proving Data Leakage | 9 models tested. RF achieved R² = 0.9985. Removing the 7 primary pollutants dropped R² to **-0.09** (proving the model was just reverse-engineering the CPCB formula). |
-| **03. Classification** | Leak-Free Forecasting | Built a leak-free matrix (lagged AQI + meteorology). Established the **Persistence Baseline** (0.585 F1), which beat all global ML models on weighted metrics due to bucket inertia. |
-| **04. Clustering** | Specialist Models | Discovered 2 distinct station regimes (Combustion vs. Background). The **Cluster-1 Specialist** beat the Global model and Baseline on the most critical metric: **Severe F1 (0.429 vs 0.407)**. |
+| Act | Objective | Models Tested | The Result |
+| :--- | :--- | :--- | :--- |
+| **1. The Trap** | Predict today's AQI from today's pollutants. | 9 Regression Models | Random Forest achieved R² = 0.9985. **(Formula Reconstruction)** |
+| **2. The Baseline** | Predict tomorrow's AQI category (leak-free). | 7 Classification Models | Persistence ("tomorrow = today") beat all global models on accuracy due to bucket inertia. |
+| **3. The Solution** | Group stations by pollution regime. | K-Means + Random Forest | **Specialist Model** matched/beat the baseline on **Severe F1 (0.429 vs 0.407)** on a limited test set. |
 
 ---
 
-##  System Architecture: The Dual Pipeline
+##  System Architecture
 
-### 1. The Live API Pipeline (`src/`)
+The platform is built on a robust dual-pipeline architecture, separating real-time ETL monitoring from historical ML forecasting.
+
+![System Architecture](./assets/system_architecture.png)
+
+<details>
+<summary><b>🔍 Click to expand the Dual-Pipeline Deep Dive</b></summary>
+<br>
+
+###  1. The Live API Pipeline (`src/`)
 *   **Ingestion:** Fetches real-time CPCB data from `data.gov.in` using a firewall-bypassing User-Agent and pagination.
-*   **Processing:** Computes official CPCB sub-indices using piecewise breakpoints. Includes rigorous CO-unit inversion logic (mg/m³ vs. 0-500 sub-index).
-*   **Analytics:** Generates 5 production Seaborn dashboards (Masked Heatmap, Top Cities Dot Plot, AQI Distribution, Pollutant Dominance, Time Series).
+*   **Processing:** Computes official CPCB sub-indices using piecewise breakpoints. Includes rigorous CO-unit inversion logic.
+*   **Analytics:** Generates 5 production Seaborn dashboards.
 *   **Reporting:** Outputs a multi-sheet `executive_summary.xlsx` with audit logs.
 
-### 2. The Historical ML Pipeline (`notebooks/`)
+###  2. The Historical ML Pipeline (`notebooks/`)
 *   **Data:** Merges a massive nested Kaggle ZIP (2010–2026) into a single standardized CSV.
 *   **Feature Engineering:** Implements Lag features (`aqi_lag_3d`, `aqi_lag_7d`), Diwali offsets, and meteorological interactions.
 *   **Validation:** Uses **Temporal Splits** (80/20 by date) to prevent future data from leaking into the training set.
+</details>
 
 ---
 
-## 🖼️ Gallery (Live Pipeline Outputs)
+##  Gallery (Live Pipeline Outputs)
+
+The real-time ETL pipeline automatically generates the following artifacts for stakeholders:
 
 **1. Live Dashboard: AQI Category Distribution**
-![AQI Distribution](./assets/01_aqi_category_distribution.png)
+![AQI Distribution](./assets/03_aqi_category_distribution.png)
 
-**2. The Winter Inversion (EDA Q1)**
-![Winter Inversion](./assets/eda_q1_winter_inversion.png)
-
-**3. The Forecasting Verdict (Notebook 04)**
-![Clustering Verdict](./assets/clustering_aggregate_comparison.png)
+**2. Automated Executive Excel Report**
+The ETL pipeline automatically generates a multi-sheet `executive_summary.xlsx` file using OpenPyXL. It features:
+*   Data audits and missing value summaries.
+*   Pollutant correlation matrices.
+*   Top 10 most polluted cities and station-level statistics.
 
 ---
 
 ##  Detailed Project Structure
 
 ```text
-india-aqi-ml-platform/
+vayu-aqi-intelligence/
 ├── .env.example           # API key template
 ├── requirements.txt       # Dependencies
 ├── data/                  # (Ignored in Git) Raw & Processed CSVs
@@ -84,18 +125,19 @@ india-aqi-ml-platform/
 │   ├── 01_eda_research_questions.ipynb
 │   ├── 02_regression_models.ipynb
 │   ├── 03_classification_arena.ipynb
-│   └── 04_unsupervised_clustering.ipynb
+│   ├── 04_unsupervised_clustering.ipynb
+│   └── 05_portfolio_presentation.ipynb  <-- START HERE
 └── assets/                # Generated charts and Excel reports
 ```
 
 ---
 
-##  How to Run This Project
+##  Quickstart
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/yourusername/india-aqi-ml-platform.git
-cd india-aqi-ml-platform
+git clone https://github.com/anandhusuresh04/vayu-aqi-intelligence.git
+cd vayu-aqi-intelligence
 pip install -r requirements.txt
 ```
 
@@ -118,19 +160,19 @@ jupyter notebook
 
 ---
 
-## 🔮 Future Work: Scaling the Platform (Analyst Roadmap)
-As a Data Analyst, the next logical steps are to transition this from a local pipeline into an automated Business Intelligence (BI) and reporting product:
+## 🔮 Future Work: Scaling the Platform
 
-1. **Interactive BI Dashboards:** Port the static Seaborn charts and Excel reports into an interactive **Power BI or Tableau** dashboard. This would allow policymakers to filter by station, date range, and pollutant type in real-time.
-2. **Automated Alerting System:** Connect the live pipeline to a Slack/Email webhook. If the live API detects an AQI spike crossing the "Severe" threshold at a specific station, it automatically dispatches an alert to health officials.
-3. **Data Quality & Monitoring (dbt):** Formalize the data cleaning steps (handling missing sub-indices and unit inversions) into `dbt` models or SQL views in Snowflake/BigQuery to ensure enterprise-grade data reliability and lineage.
-4. **Business Impact Translation:** Create a final "Policy Action" report that maps the ML findings (e.g., "Alipur needs combustion controls, Wazirpur needs dust suppression") directly to the annual Delhi Winter Action Plan, proving the ROI of the analytics work.
+As a Data Analyst, the next logical steps are to transition this from a local pipeline into an automated Business Intelligence (BI) product:
+
+1.  **Interactive BI Dashboards:** Port the static Seaborn charts and Excel reports into an interactive **Power BI or Tableau** dashboard.
+2.  **Automated Alerting System:** Connect the live pipeline to a Slack/Email webhook to alert health officials when AQI crosses "Severe" thresholds.
+3.  **Data Quality & Monitoring (dbt):** Formalize the data cleaning steps into `dbt` models or SQL views in Snowflake/BigQuery for enterprise-grade data lineage.
+4.  **Dynamic Retraining (MLOps):** Implement automated retraining every 6 months to combat the massive data drift (Severe days dropped from 14% to 1.4%).
 
 ---
 *Built with an emphasis on statistical rigor, baseline defense, and data leakage prevention.*
 
 ---
-
 
 <div align="center">
   <h3>🤝 Connect with Me</h3>
